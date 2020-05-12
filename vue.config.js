@@ -36,6 +36,17 @@ module.exports = {
       warnings: false,
       errors: true
     },
+
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080', // 开发环境
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
+
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

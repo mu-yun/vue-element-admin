@@ -1,24 +1,31 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function login(loginForm) {
+  // submit form data
+  const data = new FormData()
+  for (const key in loginForm) {
+    data.append(key, loginForm[key])
+  }
   return request({
-    url: '/vue-element-admin/user/login',
+    url: '/login',
     method: 'post',
+    baseURL: '/api',
     data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    url: '/user/detail',
+    baseURL: '/api',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
+    url: '/logout',
+    baseURL: '/api',
     method: 'post'
   })
 }
