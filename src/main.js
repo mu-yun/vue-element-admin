@@ -43,6 +43,11 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+//global method
+Vue.prototype.getTitle = function(id) {
+  return id ? 'Edit' : 'Created'
+}
+
 Vue.config.productionTip = false
 
 new Vue({
