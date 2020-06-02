@@ -2,7 +2,15 @@ import request from '@/utils/request'
 
 export function listMenu(id) {
   return request({
-    url: id ? `/menu/${id}/menu` : '/menu',
+    url: id ? `/menu/${id}` : '/menu',
+    baseURL: '/api',
+    method: 'get'
+  })
+}
+
+export function listMenuTree(id) {
+  return request({
+    url: id ? `/menu/tree/${id}` : '/menu/tree',
     baseURL: '/api',
     method: 'get'
   })
@@ -17,9 +25,9 @@ export function createMenu(data) {
   })
 }
 
-export function updateMenu(id, data) {
+export function updateMenu(data) {
   return request({
-    url: `/menu/${id}`,
+    url: `/menu/${data.id}`,
     baseURL: '/api',
     method: 'put',
     data
