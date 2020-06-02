@@ -130,6 +130,38 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/menu',
+    alwaysShow: true,
+    name: 'System',
+    meta: {
+      title: 'System',
+      icon: 'setting',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'menu',
+        component: () => import('@/views/menu/index'),
+        name: 'Menu',
+        meta: {
+          title: 'Menu',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/role/index'),
+        name: 'Role',
+        meta: {
+          title: 'Role',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
