@@ -114,7 +114,6 @@
         ref="dataForm"
         :rules="rules"
         :model="temp"
-        label-position="left"
         label-width="100px"
       >
         <el-form-item label="Name" prop="name">
