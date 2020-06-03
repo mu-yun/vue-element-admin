@@ -155,6 +155,7 @@
 import { listMenu, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 import { copy } from '@/utils/object'
 import waves from '@/directive/waves' // waves directive
+import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '../../utils/notification'
 
 const httpMethodOptions = [
   { key: 0, display_name: 'GET' },
@@ -292,12 +293,7 @@ export default {
               this.list.push(data)
             }
             this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
+            this.$notify(CREATE_SUCCESS)
           })
         }
       })
@@ -322,12 +318,7 @@ export default {
             list.splice(index, 1, data)
             // TODO change parentId
             this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
+            this.$notify(UPDATE_SUCCESS)
           })
         }
       })
@@ -340,12 +331,7 @@ export default {
         if (list.length === 0 && row.parent) {
           row.parent.hasChildren = false
         }
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
+        this.$notify(DELETE_SUCCESS)
       })
     }
   }

@@ -155,6 +155,7 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { copy } from '../../utils/object'
 import { listMenuTree } from '../../api/menu'
+import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '../../utils/notification'
 
 export default {
   name: 'Role',
@@ -265,12 +266,7 @@ export default {
             }
 
             this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
+            this.$notify(CREATE_SUCCESS)
           })
         }
       })
@@ -298,12 +294,7 @@ export default {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, response.data)
             this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
+            this.$notify(UPDATE_SUCCESS)
           })
         }
       })
@@ -311,12 +302,7 @@ export default {
     handleDelete(row, index) {
       deleteRole(row.id).then(() => {
         this.list.splice(index, 1)
-        this.$notify({
-          title: 'Success',
-          message: 'Delete Successfully',
-          type: 'success',
-          duration: 2000
-        })
+        this.$notify(DELETE_SUCCESS)
       })
     },
 
