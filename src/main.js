@@ -45,7 +45,7 @@ Object.keys(filters).forEach(key => {
 
 //global method
 Vue.prototype.getTitle = function(id) {
-  return id ? 'Edit' : 'Created'
+  return id ? 'Edit' : 'Create'
 }
 
 Vue.config.productionTip = false
