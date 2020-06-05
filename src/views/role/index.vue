@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { listRole, createRole, updateRole, deleteRole, getMenus } from '@/api/role-custom'
+import { listRole, createRole, updateRole, deleteRole, getRoleMenus } from '@/api/role-custom'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { copy } from '../../utils/object'
@@ -194,7 +194,6 @@ export default {
   },
   methods: {
     loadTree(node, resolve) {
-      console.log(node)
       this.treeHasLoaded = true
       listMenuTree(node.data ? node.data.id : null).then(response => {
         resolve(response.data)
@@ -272,7 +271,7 @@ export default {
     },
     handleUpdate(row) {
       copy(this.temp, row)
-      getMenus(row.id).then(response => {
+      getRoleMenus(row.id).then(response => {
         const menus = response.data
         this.temp.menus = menus
         if (this.treeHasLoaded) {

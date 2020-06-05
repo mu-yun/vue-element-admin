@@ -9,7 +9,7 @@ export function listRole(query) {
   })
 }
 
-export function getMenus(id) {
+export function getRoleMenus(id) {
   return request({
     url: `/role/${id}/menus`,
     baseURL: '/api',
