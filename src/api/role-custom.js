@@ -17,6 +17,14 @@ export function getMenus(id) {
   })
 }
 
+export function getAllRoles() {
+  return request({
+    url: '/role/all',
+    baseURL: 'api',
+    method: 'get'
+  })
+}
+
 export function createRole(data) {
   return request({
     url: '/role',
