@@ -87,12 +87,7 @@
       >
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">Edit</el-button>
-          <el-button
-            v-if="row.status!='deleted'"
-            size="mini"
-            type="danger"
-            @click="handleDelete(row,$index)"
-          >Delete</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row,$index)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
