@@ -30,6 +30,24 @@ export function logout() {
   })
 }
 
+export function changeUserInfo(data) {
+  return request({
+    url: '/user',
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
+export function changePassword(data) {
+  return request({
+    url: '/user/password',
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
 export function listUser(query) {
   return request({
     url: '/user',

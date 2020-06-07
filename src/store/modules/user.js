@@ -6,6 +6,7 @@ const state = {
   token: getToken(),
   username: '',
   name: '',
+  phoneNumber: '',
   avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
   introduction: '',
   roles: []
@@ -23,6 +24,9 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_PHONE_NUMBER: (state, phoneNumber) => {
+    state.phoneNumber = phoneNumber
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -61,7 +65,7 @@ const actions = {
         }
 
         // const { roles, name, avatar, introduction } = data
-        const { username, name } = data
+        const { username, name, phoneNumber } = data
 
         const roles = ['admin']
         data.roles = roles
@@ -74,6 +78,7 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_USER_NAME', username)
         commit('SET_NAME', name)
+        commit('SET_PHONE_NUMBER', phoneNumber)
         // commit('SET_AVATAR', avatar)
         // commit('SET_INTRODUCTION', introduction)
         resolve(data)
