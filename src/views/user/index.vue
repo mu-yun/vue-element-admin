@@ -364,8 +364,11 @@ export default {
       })
     },
     handleResetPassowrd(row) {
+      this.resetTemp()
+      this.temp.id = row.id
+      this.temp.username = row.username
+
       this.resetPassword = true
-      copy(this.temp, row)
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
