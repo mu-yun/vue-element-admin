@@ -354,7 +354,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updateUser(this.temp).then(response => {
+          const { id, username, name, phoneNumber, roles } = this.temp
+          const data = { id, username, name, phoneNumber, roles }
+          updateUser(data).then(response => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, response.data)
             this.dialogFormVisible = false
@@ -377,7 +379,9 @@ export default {
     updatePassword() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          updatePassword(this.temp).then((response) => {
+          const { id, password } = this.temp
+          const data = { id, password }
+          updatePassword(data).then((response) => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, response.data)
             this.dialogFormVisible = false
