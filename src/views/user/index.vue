@@ -327,6 +327,7 @@ export default {
           createUser(this.temp).then(response => {
             const data = response.data
 
+            this.total++
             if (
               this.page === Math.ceil(this.total / this.listQuery.size) &&
               this.listQuery.sort === 'id,ASC'
@@ -334,6 +335,9 @@ export default {
               this.list.push(data)
             } else if (this.page === 1 && this.listQuery.sort === 'id,DESC') {
               this.list.unshift(data)
+              if (this.total > this.listQuery.size) {
+                this.list.pop()
+              }
             }
 
             this.dialogFormVisible = false
@@ -397,6 +401,7 @@ export default {
     },
     handleDelete(row, index) {
       deleteUser(row.id).then(() => {
+        this.total--
         this.list.splice(index, 1)
         this.$notify(DELETE_SUCCESS)
       })
