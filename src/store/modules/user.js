@@ -17,12 +17,6 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
-  SET_USER_NAME: (state, username) => {
-    state.username = username
-  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -32,12 +26,24 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
-  },
-  SET_AUTHORITIES: (state, authorities) => {
+  SET_USER_INFO: (state, userInfo) => {
+    const { username, name, phoneNumber, authorities, roles } = userInfo
+    state.username = username
+    state.name = name
+    state.phoneNumber = phoneNumber
     state.authorities = authorities
+    state.roles = roles
+    // state.avatar = avatar
+    // state.introduction = introduction
+  },
+  CLEAR_USER_INFO: (state) => {
+    state.username = ''
+    state.name = ''
+    state.phoneNumber = ''
+    state.authorities = []
+    state.roles = []
   }
+
 }
 
 const actions = {
@@ -47,7 +53,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
-        console.log(data)
 
         commit('SET_TOKEN', data)
         setToken(data)
@@ -68,15 +73,8 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        // const { roles, name, avatar, introduction } = data
-        const { username, name, phoneNumber, authorities, roles } = data
-        commit('SET_ROLES', roles)
-        commit('SET_AUTHORITIES', authorities)
-        commit('SET_USER_NAME', username)
-        commit('SET_NAME', name)
-        commit('SET_PHONE_NUMBER', phoneNumber)
-        // commit('SET_AVATAR', avatar)
-        // commit('SET_INTRODUCTION', introduction)
+        commit('SET_USER_INFO', data)
+
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -85,18 +83,19 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
+  logout({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        commit('SET_AUTHORITIES', [])
         removeToken()
         resetRouter()
+
+        commit('CLEAR_USER_INFO')
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
+
+        dispatch('permission/deleteRoutes', null, { root: true })
 
         resolve()
       }).catch(error => {
@@ -106,12 +105,18 @@ const actions = {
   },
 
   // remove token
-  resetToken({ commit }) {
+  resetToken({ commit, dispatch }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
-      commit('SET_AUTHORITIES', [])
       removeToken()
+
+      commit('CLEAR_USER_INFO')
+
+      // reset visited views and cached views
+      // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+      dispatch('tagsView/delAllViews', null, { root: true })
+
+      dispatch('permission/deleteRoutes', null, { root: true })
+
       resolve()
     })
   },

@@ -75,6 +75,9 @@ const actions = {
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
+  },
+  deleteRoutes({ commit }) {
+    commit('SET_ROUTES', [])
   }
 }
 
