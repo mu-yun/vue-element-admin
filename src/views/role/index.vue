@@ -29,6 +29,7 @@
         @click="handleFilter"
       >Search</el-button>
       <el-button
+        v-permission="'role:add'"
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
@@ -80,14 +81,15 @@
       </el-table-column>
 
       <el-table-column
+        v-if="checkPermission(['role:edit','role:delete'])"
         label="Actions"
         align="center"
         width="230"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">Edit</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row,$index)">Delete</el-button>
+          <el-button v-permission="'role:edit'" type="primary" size="mini" @click="handleUpdate(row)">Edit</el-button>
+          <el-button v-permission="'role:delete'" type="danger" size="mini" @click="handleDelete(row,$index)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -146,15 +148,17 @@
 <script>
 import { listRole, createRole, updateRole, deleteRole, getRoleMenus } from '@/api/role-custom'
 import waves from '@/directive/waves' // waves directive
+import permission from '@/directive/permission/index'
+import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { copy } from '../../utils/object'
-import { listMenuTree } from '../../api/menu'
-import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '../../utils/notification'
+import { copy } from '@/utils/object'
+import { listMenuTree } from '@/api/menu'
+import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '@/utils/notification'
 
 export default {
   name: 'Role',
   components: { Pagination },
-  directives: { waves },
+  directives: { waves, permission },
   data() {
     return {
       list: null,
@@ -188,6 +192,7 @@ export default {
     this.getList()
   },
   methods: {
+    checkPermission,
     loadTree(node, resolve) {
       this.treeHasLoaded = true
       listMenuTree(node.data ? node.data.id : null).then(response => {
