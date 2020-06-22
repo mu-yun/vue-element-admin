@@ -41,6 +41,7 @@
         @click="handleFilter"
       >Search</el-button>
       <el-button
+        v-permission="'user:add'"
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
@@ -104,15 +105,16 @@
       </el-table-column>
 
       <el-table-column
+        v-if="checkPermission(['user:edit','user:password','user:delete'])"
         label="Actions"
         align="center"
         width="250"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">Edit</el-button>
-          <el-button type="success" size="mini" @click="handleResetPassowrd(row)">Password</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row,$index)">Delete</el-button>
+          <el-button v-permission="'user:edit'" type="primary" size="mini" @click="handleUpdate(row)">Edit</el-button>
+          <el-button v-permission="'user:password'" type="success" size="mini" @click="handleResetPassowrd(row)">Password</el-button>
+          <el-button v-permission="'user:delete'" type="danger" size="mini" @click="handleDelete(row,$index)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -176,17 +178,19 @@
 </template>
 
 <script>
-import { listUser, createUser, updateUser, deleteUser, updatePassword } from '../../api/user'
+import { listUser, createUser, updateUser, deleteUser, updatePassword } from '@/api/user'
 import waves from '@/directive/waves' // waves directive
+import permission from '@/directive/permission/index'
+import checkPermission from '@/utils/permission'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { copy } from '../../utils/object'
-import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '../../utils/notification'
-import { getAllRoles } from '../../api/role-custom'
+import { copy } from '@/utils/object'
+import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '@/utils/notification'
+import { getAllRoles } from '@/api/role-custom'
 
 export default {
   name: 'User',
   components: { Pagination },
-  directives: { waves },
+  directives: { waves, permission },
   data() {
     var validatePassword = (rule, value, callback) => {
       if (value === null || value === '') {
@@ -266,6 +270,7 @@ export default {
     this.getList()
   },
   methods: {
+    checkPermission,
     getList() {
       this.listQuery.page = this.page - 1
       this.listLoading = true
