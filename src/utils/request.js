@@ -51,7 +51,7 @@ service.interceptors.response.use(
       // validation error
       if (code === 3001) {
         Message({
-          message: message + '.' + res.data,
+          message: message + '. ' + res.data,
           type: 'error',
           duration: 5 * 1000
         })
