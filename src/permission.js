@@ -28,8 +28,9 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       // const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      const hasAuthorities = store.getters.authorities && store.getters.authorities.length > 0
-      if (hasAuthorities) {
+      // const hasAuthorities = store.getters.authorities && store.getters.authorities.length > 0
+      const username = store.getters.username
+      if (username) {
         next()
       } else {
         try {
