@@ -60,10 +60,22 @@ export const constantRoutes = [
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
   },
+  // {
+  //   path: '/404',
+  //   component: () => import('@/views/error-page/404'),
+  //   hidden: true
+  // },
   {
     path: '/404',
-    component: () => import('@/views/error-page/404'),
-    hidden: true
+    component: Layout,
+    redirect: '/404/page',
+    hidden: true,
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/error-page/404')
+      }
+    ]
   },
   {
     path: '/401',
