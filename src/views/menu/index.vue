@@ -32,9 +32,14 @@
           <span>{{ row.type | typeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Icon" width="60" align="center">
+      <el-table-column label="Icon" width="80" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.icon }}</span>
+          <span>
+            <template v-if="row.icon">
+              <i v-if="row.icon.includes('el-icon')" class="sub-el-icon" :class="row.icon" />
+              <svg-icon v-else :icon-class="row.icon" />
+            </template>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="Path" width="150" align="center">
@@ -67,7 +72,7 @@
           <span>{{ row.hidden }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Sequence Number" width="100" align="center">
+      <el-table-column label="Sequence" width="100" align="center">
         <template slot-scope="{row}">
           <span>{{ row.sequenceNumber }}</span>
         </template>
@@ -111,10 +116,12 @@
             <el-input v-model="temp.path" />
           </el-form-item>
         </template>
-        <template v-if="temp.type===1">
+        <template v-if="temp.type!==2">
           <el-form-item label="Comp Name" prop="componentName">
             <el-input v-model="temp.componentName" />
           </el-form-item>
+        </template>
+        <template v-if="temp.type===1">
           <el-form-item label="Comp Path" prop="componentPath">
             <el-input v-model="temp.componentPath" />
           </el-form-item>
@@ -136,7 +143,7 @@
         <el-form-item label="Authority" prop="authority">
           <el-input v-model="temp.authority" />
         </el-form-item>
-        <el-form-item v-if="temp.type!==2" label="Hidden">
+        <el-form-item label="Hidden">
           <el-switch v-model="temp.hidden" />
         </el-form-item>
         <el-form-item label="Sequence">
@@ -164,7 +171,7 @@ const httpMethodOptions = [
   { key: 5, display_name: 'DELETE' }
 ]
 const typeOptions = [
-  { key: 0, display_name: 'Catagory' },
+  { key: 0, display_name: 'Catalog' },
   { key: 1, display_name: 'Menu' },
   { key: 2, display_name: 'Button' }
 ]
@@ -212,10 +219,21 @@ export default {
         sequenceNumber: 0
       },
       dialogFormVisible: false,
-      rules: {
+      commonRules: {
         type: [{ required: true, message: 'Type is required', trigger: 'blur' }],
         name: [{ required: true, message: 'Name is required', trigger: 'blur' }]
+      },
+      catalogRules: {
+        path: [{ required: true, message: 'Path is required', trigger: 'blur' }]
       }
+    }
+  },
+  computed: {
+    rules: function() {
+      if (this.temp.type === 0) {
+        return Object.assign({}, this.commonRules, this.catalogRules)
+      }
+      return this.commonRules
     }
   },
   created() {
