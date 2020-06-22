@@ -43,6 +43,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
+    routes.push({ path: '*', redirect: '/404', hidden: true })
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   }
