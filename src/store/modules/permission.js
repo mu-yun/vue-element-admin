@@ -1,4 +1,6 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import { constantRoutes } from '@/router'
+/* Layout */
+import Layout from '@/layout'
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -46,15 +48,30 @@ const mutations = {
   }
 }
 
+const generateVueRoute = (route) => {
+  const component = route.type === 0 ? Layout : (resolve) => require([`@/views/${route.componentPath}`], resolve)
+  const vueRoute = {
+    path: route.path,
+    component: component,
+    name: route.componentName,
+    meta: {
+      title: route.name,
+      icon: route.icon,
+      authority: route.authority
+    }
+  }
+  if (route.children) {
+    vueRoute.children = route.children.map(r => generateVueRoute(r))
+    vueRoute.redirect = route.path + '/' + route.children[0].path
+    vueRoute.alwaysShow = true
+  }
+  return vueRoute
+}
+
 const actions = {
-  generateRoutes({ commit }, roles) {
+  generateRoutes({ commit }, routes) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
+      const accessedRoutes = routes.map(route => generateVueRoute(route))
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

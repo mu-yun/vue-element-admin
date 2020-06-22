@@ -9,7 +9,8 @@ const state = {
   phoneNumber: '',
   avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
   introduction: '',
-  roles: []
+  roles: [],
+  authorities: []
 }
 
 const mutations = {
@@ -33,6 +34,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_AUTHORITIES: (state, authorities) => {
+    state.authorities = authorities
   }
 }
 
@@ -65,17 +69,9 @@ const actions = {
         }
 
         // const { roles, name, avatar, introduction } = data
-        const { username, name, phoneNumber } = data
-
-        const roles = ['admin']
-        data.roles = roles
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
+        const { username, name, phoneNumber, authorities, roles } = data
         commit('SET_ROLES', roles)
+        commit('SET_AUTHORITIES', authorities)
         commit('SET_USER_NAME', username)
         commit('SET_NAME', name)
         commit('SET_PHONE_NUMBER', phoneNumber)
@@ -94,6 +90,7 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        commit('SET_AUTHORITIES', [])
         removeToken()
         resetRouter()
 
@@ -113,6 +110,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
+      commit('SET_AUTHORITIES', [])
       removeToken()
       resolve()
     })
