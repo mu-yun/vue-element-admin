@@ -35,13 +35,7 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          const { routes } = await store.dispatch('user/getInfo')
-
-          // generate accessible vue routes map based on routes from backend
-          const accessRoutes = await store.dispatch('permission/generateRoutes', routes)
-
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes)
+          await store.dispatch('user/getInfo')
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
