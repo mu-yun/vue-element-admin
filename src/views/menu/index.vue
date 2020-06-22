@@ -2,6 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-button
+        v-permission="'menu:add'"
         class="filter-item"
         style="width:100%"
         type="primary"
@@ -78,15 +79,16 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="checkPermission(['menu:add','menu:edit','menu:delete'])"
         label="Actions"
         align="center"
         width="230"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">Edit</el-button>
-          <el-button :disabled="row.type===2" type="primary" size="mini" @click="handleCreate(row)">Add</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)">Delete</el-button>
+          <el-button v-permission="'menu:add'" :disabled="row.type===2" type="primary" size="mini" @click="handleCreate(row)">Add</el-button>
+          <el-button v-permission="'menu:edit'" type="success" size="mini" @click="handleUpdate(row)">Edit</el-button>
+          <el-button v-permission="'menu:delete'" type="danger" size="mini" @click="handleDelete(row)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +164,9 @@
 import { listMenu, createMenu, updateMenu, deleteMenu } from '@/api/menu'
 import { copy } from '@/utils/object'
 import waves from '@/directive/waves' // waves directive
-import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '../../utils/notification'
+import permission from '@/directive/permission/index'
+import checkPermission from '@/utils/permission'
+import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '@/utils/notification'
 
 const httpMethodOptions = [
   { key: 0, display_name: 'GET' },
@@ -187,7 +191,7 @@ const httpMethodKeyValue = httpMethodOptions.reduce((acc, cur) => {
 
 export default {
   name: 'Menu',
-  directives: { waves },
+  directives: { waves, permission },
   filters: {
     typeFilter(type) {
       return typeKeyValue[type]
@@ -230,9 +234,9 @@ export default {
   },
   computed: {
     rules: function() {
-      if (this.temp.type === 0) {
-        return Object.assign({}, this.commonRules, this.catalogRules)
-      }
+      // if (this.temp.type === 0) {
+      //   return Object.assign({}, this.commonRules, this.catalogRules)
+      // }
       return this.commonRules
     }
   },
@@ -240,6 +244,7 @@ export default {
     this.getList()
   },
   methods: {
+    checkPermission,
     getList() {
       this.listLoading = true
       listMenu().then(response => {
