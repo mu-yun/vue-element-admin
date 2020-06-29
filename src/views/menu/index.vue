@@ -23,7 +23,7 @@
       :row-props="{children:'children',hasChildren:'hasChildren'}"
       style="width: 100%;"
     >
-      <el-table-column label="Name" min-width="150" align="center">
+      <el-table-column label="Name" min-width="200" align="center">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
