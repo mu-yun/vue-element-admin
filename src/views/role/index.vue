@@ -134,6 +134,7 @@
             :load="loadTree"
             :default-checked-keys="temp.menus"
             :props="{children:'children',label:'name',isLeaf:'childless'}"
+            @check-change="handleCheckChange"
           />
         </el-form-item>
       </el-form>
@@ -193,6 +194,15 @@ export default {
   },
   methods: {
     checkPermission,
+    handleCheckChange(data, checked, indeterminate) {
+      if (checked) {
+        const node = this.$refs['tree'].getNode(data)
+        const parentNode = node.parent
+        if (parent && !parent.checked) {
+          parentNode.checked = true
+        }
+      }
+    },
     loadTree(node, resolve) {
       this.treeHasLoaded = true
       listMenuTree(node.data ? node.data.id : null).then(response => {
