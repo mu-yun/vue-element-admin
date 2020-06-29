@@ -4,39 +4,66 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  username: '',
   name: '',
-  avatar: '',
+  phoneNumber: '',
+  avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
   introduction: '',
-  roles: []
+  roles: [],
+  authorities: []
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_PHONE_NUMBER: (state, phoneNumber) => {
+    state.phoneNumber = phoneNumber
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_ROLES: (state, roles) => {
+  SET_USER_INFO: (state, userInfo) => {
+    const { username, name, phoneNumber, authorities, roles } = userInfo
+    state.username = username
+    state.name = name
+    state.phoneNumber = phoneNumber
+    state.authorities = authorities
     state.roles = roles
+    // state.avatar = avatar
+    // state.introduction = introduction
+  },
+  CLEAR_USER_INFO: (state) => {
+    state.username = ''
+    state.name = ''
+    state.phoneNumber = ''
+    state.authorities = []
+    state.roles = []
   }
+
 }
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ username: username.trim(), password: password }).then(async response => {
+        const { data: { token, userInfo }} = response
+
+        commit('SET_USER_INFO', userInfo)
+        commit('SET_TOKEN', token)
+        setToken(token)
+
+        const { routes } = userInfo
+        // generate accessible routes map based on roles
+        const accessRoutes = await dispatch('permission/generateRoutes', routes, { root: true })
+        // dynamically add accessible routes
+        router.addRoutes(accessRoutes)
+
         resolve()
       }).catch(error => {
         reject(error)
@@ -45,26 +72,23 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(async response => {
         const { data } = response
 
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        commit('SET_USER_INFO', data)
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
+        const { routes } = data
+        // generate accessible routes map based on roles
+        const accessRoutes = await dispatch('permission/generateRoutes', routes, { root: true })
+        // dynamically add accessible routes
+        router.addRoutes(accessRoutes)
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -73,13 +97,15 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state, dispatch }) {
+  logout({ state, commit, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
         removeToken()
         resetRouter()
+
+        commit('CLEAR_USER_INFO')
+
+        dispatch('permission/deleteRoutes', null, { root: true })
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
@@ -93,11 +119,15 @@ const actions = {
   },
 
   // remove token
-  resetToken({ commit }) {
+  resetToken({ commit, dispatch }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      commit('SET_ROLES', [])
       removeToken()
+      resetRouter()
+
+      commit('CLEAR_USER_INFO')
+
+      dispatch('permission/deleteRoutes', null, { root: true })
+
       resolve()
     })
   },

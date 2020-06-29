@@ -11,6 +11,7 @@ export function isExternal(path) {
 }
 
 /**
+ * //TODO remove
  * @param {string} str
  * @returns {Boolean}
  */

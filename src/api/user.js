@@ -1,24 +1,94 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function login(loginForm) {
+  // submit form data
+  const data = new FormData()
+  for (const key in loginForm) {
+    data.append(key, loginForm[key])
+  }
   return request({
-    url: '/vue-element-admin/user/login',
+    url: '/login',
     method: 'post',
+    baseURL: '/api',
     data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vue-element-admin/user/info',
-    method: 'get',
-    params: { token }
+    url: '/user/detail',
+    baseURL: '/api',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
+    url: '/logout',
+    baseURL: '/api',
     method: 'post'
   })
 }
+
+export function changeUserInfo(data) {
+  return request({
+    url: '/user',
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
+export function changePassword(data) {
+  return request({
+    url: '/user/password',
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
+export function listUser(query) {
+  return request({
+    url: '/user',
+    baseURL: '/api',
+    method: 'get',
+    params: query
+  })
+}
+
+export function createUser(data) {
+  return request({
+    url: '/user',
+    baseURL: '/api',
+    method: 'post',
+    data
+  })
+}
+
+export function updateUser(data) {
+  return request({
+    url: `/user/${data.id}`,
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
+export function updatePassword(data) {
+  return request({
+    url: `/user/${data.id}/password`,
+    baseURL: '/api',
+    method: 'put',
+    data
+  })
+}
+
+export function deleteUser(id) {
+  return request({
+    url: `/user/${id}`,
+    baseURL: '/api',
+    method: 'delete'
+  })
+}
+

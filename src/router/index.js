@@ -60,10 +60,22 @@ export const constantRoutes = [
     component: () => import('@/views/login/auth-redirect'),
     hidden: true
   },
+  // {
+  //   path: '/404',
+  //   component: () => import('@/views/error-page/404'),
+  //   hidden: true
+  // },
   {
     path: '/404',
-    component: () => import('@/views/error-page/404'),
-    hidden: true
+    component: Layout,
+    redirect: '/404/page',
+    hidden: true,
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/error-page/404')
+      }
+    ]
   },
   {
     path: '/401',
@@ -129,6 +141,47 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/menu',
+    alwaysShow: true,
+    name: 'System',
+    meta: {
+      title: 'System',
+      icon: 'setting',
+      roles: ['admin']
+    },
+    children: [
+      {
+        path: 'menu',
+        component: () => import('@/views/menu/index'),
+        name: 'Menu',
+        meta: {
+          title: 'Menu',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/role/index'),
+        name: 'Role',
+        meta: {
+          title: 'Role',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'user',
+        component: () => import('@/views/user/index'),
+        name: 'User',
+        meta: {
+          title: 'User',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
   {
     path: '/permission',
     component: Layout,

@@ -27,20 +27,15 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       // determine whether the user has obtained his permission roles through getInfo
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (hasRoles) {
+      // const hasRoles = store.getters.roles && store.getters.roles.length > 0
+      // const hasAuthorities = store.getters.authorities && store.getters.authorities.length > 0
+      const username = store.getters.username
+      if (username) {
         next()
       } else {
         try {
           // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles } = await store.dispatch('user/getInfo')
-
-          // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
-
-          // dynamically add accessible routes
-          router.addRoutes(accessRoutes)
+          await store.dispatch('user/getInfo')
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
