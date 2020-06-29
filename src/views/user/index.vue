@@ -15,7 +15,7 @@
       </el-select>
       <el-input
         v-model="listQuery.keyword"
-        placeholder="Keyword"
+        :placeholder="typeKeyValue[listQuery.type]"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -187,6 +187,16 @@ import { copy } from '@/utils/object'
 import { CREATE_SUCCESS, UPDATE_SUCCESS, DELETE_SUCCESS } from '@/utils/notification'
 import { getAllRoles } from '@/api/role-custom'
 
+const typeOptions = [
+  { key: 'USERNAME', label: 'Username' },
+  { key: 'NAME', label: 'Name' }
+]
+
+const typeKeyValue = typeOptions.reduce((acc, cur) => {
+  acc[cur.key] = cur.label
+  return acc
+}, {})
+
 export default {
   name: 'User',
   components: { Pagination },
@@ -217,6 +227,7 @@ export default {
         callback()
       }
     }
+
     return {
       list: null,
       total: 0,
@@ -229,10 +240,8 @@ export default {
         size: 20,
         sort: 'id,ASC'
       },
-      typeOptions: [
-        { key: 'USERNAME', label: 'Username' },
-        { key: 'NAME', label: 'Name' }
-      ],
+      typeOptions,
+      typeKeyValue,
       sortOptions: [
         { label: 'ID Ascending', key: 'id,ASC' },
         { label: 'ID Descending', key: 'id,DESC' }
